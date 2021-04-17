@@ -4,37 +4,36 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import FastRewindIcon from '@material-ui/icons/FastRewind';
 import PauseIcon from '@material-ui/icons/Pause';
 import FastForwardIcon from '@material-ui/icons/FastForward';
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useRef} from 'react'
 import {storage} from './firebase'
-// import promise
+
+
+
 function App() {
-  // const[play, setplay]=useState()
-  // const[pause, setpause]=useState()
-  // const[rewind, setrewind]=useState()
-  // const[forward, setforward]=useState()
-  const [songlist,setsonglist]= useState([]);
+  const [songlist,_setsonglist]= useState([]);
+  const [image,setimage]= useState("http://giphy.com/gifs/MuztdWJQ4PR7i")
   const [playing,setplaying]= useState(false);
-  const [myAudio,setaudio] = useState(new Audio("https://firebasestorage.googleapis.com/v0/b/hifi-cafe.appspot.com/o/Blinding%20Lights.mp3?alt=media&token=28ba4074-ca91-4032-84eb-c4de03be20ad"));
+  const [myAudio,setaudio] = useState(new Audio("https://firebasestorage.googleapis.com/v0/b/hifi-cafe.appspot.com/o/oh_no_oh_no.mp3?alt=media&token=375d5278-3b2a-4d1a-95e3-51d8790e75cd"));
   const [recents,setrecents] = useState([])
-  const [details, setdetails] = useState("Blinding Lights")
+  const [details, setdetails] = useState("Oh no!")
+  const myStateRef = useRef(songlist);
+  const setsonglist = data => {
+    myStateRef.current = data;
+    _setsonglist(data);
+  };
+
 
 
   async function playit(){
     let full_list = await storage.ref('/').listAll()
-    // let json_data = full_list.json().then(data => {
-    //   console.log(data.items._delegate.items);
-    // })
     let data_files = full_list._delegate.items;
     let files = data_files.map((value, index) => {
       let info = value._location.path_
       return info
     })
-    // console.log(full_list);
     console.log(files);
-    // console.log(full_list._delegate.items[0]._location.path_);
-    let promise_list = []
-    // console.log( "Got download url: ", files );
-    
+
+    let promise_list = []    
     for (let i=0;i<files.length;i++){
       let filename = files[i]
       let store = await storage.ref( `/${filename}`).getDownloadURL()
@@ -49,11 +48,27 @@ function App() {
       setsonglist(lst);
       console.log(lst);
     })
+    myAudio.addEventListener('ended', function(){rand_play()});
 
-      // .then( url => {
-      //   console.log( "Got download url: ", url );
-      // })
 
+    // document.body.appendChild(myAudio)
+  }
+
+  function setgif(){
+    let data;
+    const giphy = require('giphy-api-without-credentials')('LW4KBeDgzRVgzEe7kZYmFIBZmJtNVus5');
+    giphy.search('pokemon', function(err, res) {
+      console.log(res) 
+      res.data.map((data)=>setimage(data.url))
+});
+
+    let url = `https://api.giphy.com/v1/gifs/search?api_key=LW4KBeDgzRVgzEe7kZYmFIBZmJtNVus5&q=depressed`
+    
+    fetch(url).then(response => response.json())
+    .then(data=> { setimage(data.data[Math.floor(Math.random()*data.data.length)].url)})
+    // .then(data=> { console.log(data.data )})
+    .catch(err => console.error(err))
+    // console.log(res);
   }
 
   function getprev(){
@@ -75,26 +90,25 @@ function App() {
 
   function play(){
     setplaying(true);
-    myAudio.play();
+    myAudio.play(); 
+    setgif();   
   }
 
   function rand_play(){
-    let rand_int = Math.floor(Math.random()*(songlist.length))
-    setrecents([...recents,songlist[rand_int]])
-    myAudio.src = songlist[rand_int].url;
-    setdetails(songlist[rand_int].name);
+    let mysonglist = myStateRef.current;
+    let rand_int = Math.floor(Math.random()*(mysonglist.length-1))
+    console.log(mysonglist , rand_int)
+    setrecents([...recents,mysonglist[rand_int]])
+    myAudio.src = mysonglist[rand_int].url;
+    setdetails(mysonglist[rand_int].name);
     myAudio.play();
     setplaying(true)
     }
 
-  // function rand_play(){
-  //   let rand_int = Math.floor(Math.random()*(songlist.length))
-  //   var myAudio = new Audio(songlist[rand_int]);
-  //     myAudio.play()
-  //   console.log(songlist)
-  //   }
+
 
   useEffect(()=>{
+    
     playit();
   },[])
 
@@ -112,6 +126,11 @@ function App() {
         </Tools>
       </Banner>
       <Content>
+        {/* {document.createElement('image',image)} */}
+        {/* <div style={{backgroundImage:` url(${image})`}}></div> */}
+        <img src='${image}' crossOrigin="anonymous" />.
+
+
 
       </Content>
     </Container>
@@ -121,6 +140,7 @@ function App() {
 export default App;
 const Container = styled.div`
   background-color: black;
+  background-image:url('https://tenor.com/7Xyh.gif');
   min-height: 100vh;
   padding: 0px;
   margin: 0px;
@@ -137,4 +157,6 @@ const Tools= styled.div`
   height:30px;
   width: 30px;
 `
-const Info = styled.div ``
+const Info = styled.div `
+  font-family: Courier new;
+`
