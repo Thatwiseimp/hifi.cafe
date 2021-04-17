@@ -13,12 +13,28 @@ function App() {
   // const[rewind, setrewind]=useState()
   // const[forward, setforward]=useState()
   const [songlist,setsonglist]= useState([]);
+  const [playing,setplaying]= useState(false);
+  const [myAudio,setaudio] = useState(new Audio("https://firebasestorage.googleapis.com/v0/b/hifi-cafe.appspot.com/o/Blinding%20Lights.mp3?alt=media&token=28ba4074-ca91-4032-84eb-c4de03be20ad"));
+  const [recents,setrecents] = useState([])
+  const [details, setdetails] = useState("Blinding Lights")
+
 
   async function playit(){
-    let files = [ 'Blinding Lights.mp3','Midnight Sky.mp3' ];
+    let full_list = await storage.ref('/').listAll()
+    // let json_data = full_list.json().then(data => {
+    //   console.log(data.items._delegate.items);
+    // })
+    let data_files = full_list._delegate.items;
+    let files = data_files.map((value, index) => {
+      let info = value._location.path_
+      return info
+    })
+    // console.log(full_list);
+    console.log(files);
+    // console.log(full_list._delegate.items[0]._location.path_);
     let promise_list = []
     // console.log( "Got download url: ", files );
-    // let newl = files.map( filename => {
+    
     for (let i=0;i<files.length;i++){
       let filename = files[i]
       let store = await storage.ref( `/${filename}`).getDownloadURL()
@@ -27,8 +43,11 @@ function App() {
     }
     Promise.all(promise_list)
     .then((results)=>{
-      setsonglist(results);
-      console.log(songlist);
+      let lst = results.map((value, index) => {
+        return {name: files[index], url: value};
+      })
+      setsonglist(lst);
+      console.log(lst);
     })
 
       // .then( url => {
@@ -37,15 +56,46 @@ function App() {
 
   }
 
+  function getprev(){
+    myAudio.src = songlist[recents.length-2].url;
+    setdetails(songlist[recents.length-2].name);
+    let newlist=[...recents]
+    newlist.pop()
+    console.log(newlist)
+    setrecents(newlist)
+    myAudio.play();
+    setplaying(true)
+  }
+
+  function pause(){
+    console.log("paused");
+    setplaying(false);
+    myAudio.pause();
+  }
+
+  function play(){
+    setplaying(true);
+    myAudio.play();
+  }
+
   function rand_play(){
     let rand_int = Math.floor(Math.random()*(songlist.length))
-    var myAudio = new Audio(songlist[rand_int]);
-      myAudio.play()
-    console.log(songlist)
+    setrecents([...recents,songlist[rand_int]])
+    myAudio.src = songlist[rand_int].url;
+    setdetails(songlist[rand_int].name);
+    myAudio.play();
+    setplaying(true)
     }
 
+  // function rand_play(){
+  //   let rand_int = Math.floor(Math.random()*(songlist.length))
+  //   var myAudio = new Audio(songlist[rand_int]);
+  //     myAudio.play()
+  //   console.log(songlist)
+  //   }
+
   useEffect(()=>{
-    playit()
+    playit();
   },[])
 
   return (
@@ -53,11 +103,11 @@ function App() {
       <Banner>
         <h1>Hi-fi.cafe ☕</h1>
         <Tools>
-          <FastRewindIcon />
-          <PlayArrowIcon onClick={rand_play}/>
-          <PauseIcon />
-          <FastForwardIcon />
-          <Info>Songs info</Info>
+          { recents.length > 1 ? <FastRewindIcon onClick={getprev}/> : null}
+          { (playing)  ? <PauseIcon onClick={pause}/> : <PlayArrowIcon onClick={play}/> }
+          
+          <FastForwardIcon onClick={rand_play}/>
+          <Info>{details}</Info>
 
         </Tools>
       </Banner>
