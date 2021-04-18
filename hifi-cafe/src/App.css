@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  position: absolute;
 }
 
 .App-logo {
@@ -35,4 +36,47 @@
   to {
     transform: rotate(360deg);
   }
+}
+.toolbar{
+  background-color: rgba(86, 91, 92, 0.555);
+  width: 20%;
+  display:flex;
+  margin-left: 40vw;
+  margin-top: 75vh;
+  justify-content: center;
+  border: solid 5px grey;
+  border-radius: 10px;
+
+}
+.cont{
+  position: absolute;
+  padding: 0px;
+}
+.info{
+  font-family: Courier new;
+  margin: auto;
+  width: fit-content;
+  padding: 5px 15px 5px 15px;
+  font-size: 30px;
+  color: black;
+  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 10px;
+  display: flex;
+  flex-grow: 1;
+}
+
+.hd{
+  align-items: left;
+  position: fixed;
+  max-width: 100px;
+  margin-left: 0px;
+}
+
+#my_image {
+  position: fixed;
+  
+  left: 0;
+  top: 0;
+  max-width: 200px;
 }
