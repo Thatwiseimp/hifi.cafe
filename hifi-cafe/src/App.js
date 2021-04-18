@@ -14,9 +14,9 @@ function App() {
   const [songlist,_setsonglist]= useState([]);
   const [image,setimage]= useState("https://media0.giphy.com/media/YQbWaRk0MoZ5m/giphy.gif?cid=6a29bdc4w4t3fi0uc0r2t3cg587cvd5m42y91y4cxzc1ltoj&rid=giphy.gif&ct=g")
   const [playing,setplaying]= useState(false);
-  const [myAudio,setaudio] = useState(new Audio("https://firebasestorage.googleapis.com/v0/b/hifi-cafe.appspot.com/o/oh_no_oh_no.mp3?alt=media&token=375d5278-3b2a-4d1a-95e3-51d8790e75cd"));
+  const [myAudio,setaudio] = useState(new Audio("https://firebasestorage.googleapis.com/v0/b/hifi-cafe.appspot.com/o/Blinding%20Lights.mp3?alt=media&token=28ba4074-ca91-4032-84eb-c4de03be20ad"));
   const [recents,setrecents] = useState([])
-  const [details, setdetails] = useState("Oh no!")
+  const [details, setdetails] = useState("Blinding lights")
   const myStateRef = useRef(songlist);
   const setsonglist = data => {
     myStateRef.current = data;
@@ -34,7 +34,7 @@ function App() {
     })
     console.log(files);
 
-    let promise_list = []    
+    let promise_list = []
     for (let i=0;i<files.length;i++){
       let filename = files[i]
       let store = await storage.ref( `/${filename}`).getDownloadURL()
@@ -56,8 +56,8 @@ function App() {
   }
 
   function setgif(){
-    let url = `https://api.giphy.com/v1/gifs/search?api_key=LW4KBeDgzRVgzEe7kZYmFIBZmJtNVus5&q=depressed`
-    
+    let url = `https://api.giphy.com/v1/gifs/search?api_key=LW4KBeDgzRVgzEe7kZYmFIBZmJtNVus5&q=sadness`
+
     fetch(url).then(response => response.json())
     .then(data=> { setimage(data.data[Math.floor(Math.random()*data.data.length)].images.downsized.url)})
     // .then(data=> { console.log(data )})
@@ -85,8 +85,7 @@ function App() {
 
   function play(){
     setplaying(true);
-    myAudio.play(); 
-    setgif();   
+    myAudio.play();
   }
 
   function rand_play(){
@@ -104,24 +103,28 @@ function App() {
 
 
   useEffect(()=>{
-    
+
     playit();
   },[])
 
   return (
     <Container className='cont' style={{backgroundImage: `url(${image})`}}>
       <Banner>
-        <div classname='hd'>
+        <div className='hd'>
           <img  id="my_image" src={head}></img>
+          <div className="names">
+            <h2 className='txt'>@Thatwiseimp</h2>
+            <h2 className='txt'>@TheDoodler</h2>
+          </div>
 
 
         </div>
         <Tools className='toolbar'>
           { recents.length > 1 ? <FastRewindIcon onClick={getprev} style={{ fontSize: 60 , padding: 15, color: 'black'}}/> : null}
           { (playing)  ? <PauseIcon onClick={pause} style={{ fontSize: 60, padding: 15 , color: 'black'}} /> : <PlayArrowIcon onClick={play} style={{ fontSize: 60, padding: 15, color: 'black' }} /> }
-          
+
           <FastForwardIcon onClick={rand_play} style={{ fontSize: 60, padding: 15, color: 'black' }}/>
-         
+
 
         </Tools>
         <Info className='info'>{details}</Info>
@@ -162,5 +165,5 @@ const Tools= styled.div`
 `
 const Info = styled.div `
 
-  
+
 `

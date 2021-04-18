@@ -39,9 +39,10 @@
 }
 .toolbar{
   background-color: rgba(86, 91, 92, 0.555);
-  width: 20%;
+  width: fit-content;
   display:flex;
-  margin-left: 40vw;
+  margin-left:auto;
+  margin-right: auto;
   margin-top: 75vh;
   justify-content: center;
   border: solid 5px grey;
@@ -75,8 +76,23 @@
 
 #my_image {
   position: fixed;
-  
+
   left: 0;
   top: 0;
   max-width: 200px;
+}
+
+
+.names{
+  position: fixed;
+  right: 0;
+  top: 0;
+}
+
+.txt{
+  font-style: italic;
+  font-size: 1em;
+  margin-top: -50;
+
+
 }
