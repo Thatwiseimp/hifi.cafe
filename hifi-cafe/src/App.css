@@ -38,15 +38,15 @@
   }
 }
 .toolbar{
-  background-color: rgba(86, 91, 92, 0.555);
+  background-color: rgba(158, 162, 163, 0.651);
   width: fit-content;
   display:flex;
   margin-left:auto;
   margin-right: auto;
-  margin-top: 75vh;
+  margin-top: 80vh;
   justify-content: center;
-  border: solid 5px grey;
-  border-radius: 10px;
+  border: solid 5px white;
+  border-radius: 40px;
 
 }
 .cont{
@@ -56,6 +56,7 @@
 .info{
   font-family: Courier new;
   margin: auto;
+  margin-top: 90vh;
   width: fit-content;
   padding: 5px 15px 5px 15px;
   font-size: 30px;
@@ -74,12 +75,21 @@
   margin-left: 0px;
 }
 
-#my_image {
+#my_image1 {
   position: fixed;
 
   left: 0;
   top: 0;
   max-width: 200px;
+}
+#my_image2 {
+
+  position: relative;
+  margin-right: 3vw;
+  margin-top: 3vh;
+  max-width: 3vw;
+  display: flex;
+  flex-direction: column;
 }
 
 

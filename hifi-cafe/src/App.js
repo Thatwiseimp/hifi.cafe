@@ -7,6 +7,10 @@ import FastForwardIcon from '@material-ui/icons/FastForward';
 import {useState, useEffect, useRef} from 'react'
 import {storage} from './firebase'
 import head from './image/head.png'
+import prof1 from './image/github.png'
+import prof2 from './image/github.png'
+import FadeIn from 'react-fade-in';
+
 
 
 
@@ -18,6 +22,7 @@ function App() {
   const [recents,setrecents] = useState([])
   const [details, setdetails] = useState("Blinding lights")
   const myStateRef = useRef(songlist);
+  const[fade,set_fade]=useState(false)
   const setsonglist = data => {
     myStateRef.current = data;
     _setsonglist(data);
@@ -98,9 +103,15 @@ function App() {
     myAudio.play();
     setplaying(true)
     setgif();
-    }
+  }
 
-
+  function fader(){
+    set_fade(true)
+    setTimeout(fadeout,4500);
+  }
+  function fadeout(){
+    set_fade(false)
+  }
 
   useEffect(()=>{
 
@@ -109,25 +120,29 @@ function App() {
 
   return (
     <Container className='cont' style={{backgroundImage: `url(${image})`}}>
-      <Banner>
+      <Banner >
         <div className='hd'>
-          <img  id="my_image" src={head}></img>
+          <img  id="my_image1" src={head}></img>
           <div className="names">
-            <h2 className='txt'>@Thatwiseimp</h2>
-            <h2 className='txt'>@TheDoodler</h2>
+            <img onClick="window.location.href='https://github.com/Thatwiseimp';" id='my_image2' src={prof1}></img>
+            <img onClick="window.location.href='https://github.com/cosmoglint';" id='my_image2' src={prof2}></img>
+
           </div>
 
 
         </div>
-        <Tools className='toolbar'>
-          { recents.length > 1 ? <FastRewindIcon onClick={getprev} style={{ fontSize: 60 , padding: 15, color: 'black'}}/> : null}
-          { (playing)  ? <PauseIcon onClick={pause} style={{ fontSize: 60, padding: 15 , color: 'black'}} /> : <PlayArrowIcon onClick={play} style={{ fontSize: 60, padding: 15, color: 'black' }} /> }
+        {fade ? <FadeIn >
+          <Tools className='toolbar'>
+            { recents.length > 1 ? <FastRewindIcon onClick={getprev} style={{ fontSize: 50 , padding: 15, color: 'black'}}/> : null}
+            { (playing)  ? <PauseIcon onClick={pause} style={{ fontSize: 50, padding: 15 , color: 'black'}} /> : <PlayArrowIcon onClick={play} style={{ fontSize: 50, padding: 15, color: 'black' }} /> }
 
-          <FastForwardIcon onClick={rand_play} style={{ fontSize: 60, padding: 15, color: 'black' }}/>
+            <FastForwardIcon onClick={rand_play} style={{ fontSize: 50, padding: 15, color: 'black' }}/>
 
 
-        </Tools>
-        <Info className='info'>{details}</Info>
+          </Tools>
+
+        </FadeIn> : null}
+        <Info onMouseOver={fader} className='info'>{details}</Info>
       </Banner>
       <Content>
         {/* {document.createElement('image',image)} */}
@@ -152,6 +167,7 @@ const Container = styled.div`
   height: 100vh;
   padding: 0px;
   margin: 0px;
+  position: fixed
 `
 const Banner = styled.div`
   color:white;
@@ -164,6 +180,4 @@ const Content= styled.div`
 const Tools= styled.div`
 `
 const Info = styled.div `
-
-
 `
